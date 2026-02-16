@@ -29,7 +29,17 @@ addButton.addEventListener('click', () => {
         <td class="border border-gray-200 p-2 text-center">${text}</td>
         <td class="border border-gray-200 p-2 text-center">${completed === "true" ? "✔️" : "❌"}</td>
         <td class="border border-gray-200 p-2 text-center">${new Date().toLocaleString()}</td>
+
+        <td class="border border-gray-200 p-2 text-center">
+            <button class="px-2 deleteTaskButton">❌</button>
+        </td>
     `;
+
+    const deletedBtn = row.querySelector(".deleteTaskButton");
+
+    deletedBtn.addEventListener("click", ()=>{
+        row.remove();
+    })
 
     List.appendChild(row);
     input.value = '';
