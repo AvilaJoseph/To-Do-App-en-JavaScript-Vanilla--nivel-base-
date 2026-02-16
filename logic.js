@@ -4,6 +4,8 @@ const List = document.querySelector('#taskTableBody');
 const completedSelect = document.querySelector('#completedSelect');
 const clearButton = document.querySelector("#clearTasksButton");
 const countTask = document.querySelector("#countTask");
+const searchInput = document.querySelector("#searchTasks");
+const filterSelect = document.querySelector("#filterSelect");
 
 function IsValidTask(text, completed) {
     if (text.trim() === "") {
@@ -30,15 +32,19 @@ function clearTasks() {
 
 function renderTasks() {
     List.innerHTML = "";
-    tasks.forEach((task, index) => {
+    const VisibleTasks = getVisibleTasks();
+
+    VisibleTasks.forEach((VisibleTask, index) => {
+
         const row = document.createElement('tr');
         row.innerHTML = `
             <td class="border border-gray-200 p-2 text-center">${index + 1}</td>
-            <td class="border border-gray-200 p-2 text-center">${task.text}</td>
-            <td class="border border-gray-200 p-2 text-center">${task.completed ? "✔️" : "❌"}</td>
-            <td class="border border-gray-200 p-2 text-center">${task.createdAt}</td>
+            <td class="border border-gray-200 p-2 text-center">${VisibleTask.text}</td>
+            <td class="border border-gray-200 p-2 text-center">${VisibleTask.completed ? "✔️" : "❌"}</td>
+            <td class="border border-gray-200 p-2 text-center">${VisibleTask.createdAt}</td>
 
             <td class="border border-gray-200 p-2 text-center">
+                <button class="editTaskButton px-2">✏️</button>
                 <button class="px-2 deleteTaskButton">❌</button>
             </td>
         `;
@@ -46,7 +52,8 @@ function renderTasks() {
         const deletedBtn = row.querySelector(".deleteTaskButton");
 
         deletedBtn.addEventListener("click", () => {
-            tasks.splice(index, 1)
+            const realIndex = tasks.indexOf(VisibleTask);
+            tasks.splice(realIndex, 1)
             saveTasks();
             renderTasks();
             renderCountTasks();
@@ -57,13 +64,36 @@ function renderTasks() {
 }
 
 function renderCountTasks(){
-    if(tasks.length === 0){
+    const VisibleTasks = getVisibleTasks();
+
+    if(VisibleTasks.length === 0){
         countTask.innerHTML = `<h2 class="font-light text-xl">No hay tareas actualmente</h2>`;
         return;
     }
     countTask.innerHTML = `
-        <h2 class="font-light text-xl">Hay ${tasks.length} tareas en lista</h2>
+        <h2 class="font-light text-xl">Mostrando ${VisibleTasks.length} de ${tasks.length}</h2>
     `;
+}
+
+function getVisibleTasks(){
+    const searchTasks = searchInput.value.toLowerCase();
+    const filterValue = filterSelect.value;
+
+    return tasks.filter((task) => {
+        if(!task.text.toLowerCase().includes(searchTasks)){
+            return false;
+        }
+
+        if(filterValue === "completed" && task.completed === false){
+            return false;
+        }
+
+        if(filterValue === "pending" && task.completed === true){
+            return false;
+        }
+
+        return true;
+    })
 }
 
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
@@ -92,7 +122,19 @@ addButton.addEventListener('click', () => {
     completedSelect.value = "false";
 });
 
-clearButton.addEventListener("click", clearTasks);
+clearButton.addEventListener("click", () => {
+    clearTasks()
+});
+
+searchInput.addEventListener("input", () => {
+    renderTasks();
+    renderCountTasks();
+});
+
+filterSelect.addEventListener("change", () => {
+    renderTasks();
+    renderCountTasks();
+});
 
 renderTasks();
 renderCountTasks();

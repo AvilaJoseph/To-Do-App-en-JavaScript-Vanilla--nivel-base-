@@ -27,7 +27,15 @@
             </button>
             <div class="flex gap-2 justify-between">
                 <div id="countTask" class="mt-4"></div>
-                <input type="text" id="searchTasks" class="border border-gray-200 w-38 font-light">
+                <div class="flex gap-2">
+                    <input type="text" id="searchTasks" placeholder="Buscar tarea..."
+                        class="border border-gray-200 w-38 font-light">
+                    <select class="border border-gray-200" id="filterSelect">
+                        <option value="all">All</option>
+                        <option value="completed">Completed</option>
+                        <option value="pending">Incompleted</option>
+                    </select>
+                </div>
             </div>
             <table class="border-separate border-spacing-2 w-full">
                 <thead>
