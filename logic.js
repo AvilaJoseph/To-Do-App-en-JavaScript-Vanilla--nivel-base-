@@ -2,6 +2,8 @@ const input = document.querySelector('#taskInput');
 const addButton = document.querySelector('#addTaskButton');
 const List = document.querySelector('#taskTableBody');
 const completedSelect = document.querySelector('#completedSelect');
+const clearButton = document.querySelector("#clearTasksButton");
+const countTask = document.querySelector("#countTask");
 
 function IsValidTask(text, completed) {
     if (text.trim() === "") {
@@ -13,8 +15,17 @@ function IsValidTask(text, completed) {
     return true;
 }
 
-function saveTasks(){
+function saveTasks() {
     localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+function clearTasks() {
+    const confirmClear = confirm("¿Seguro que quieres borrar todas las tareas?");
+    if (!confirmClear) return;
+    tasks = [];
+    saveTasks();
+    renderTasks();
+    renderCountTasks();
 }
 
 function renderTasks() {
@@ -22,26 +33,37 @@ function renderTasks() {
     tasks.forEach((task, index) => {
         const row = document.createElement('tr');
         row.innerHTML = `
-        <td class="border border-gray-200 p-2 text-center">${index + 1}</td>
-        <td class="border border-gray-200 p-2 text-center">${task.text}</td>
-        <td class="border border-gray-200 p-2 text-center">${task.completed === "true" ? "✔️" : "❌"}</td>
-        <td class="border border-gray-200 p-2 text-center">${task.createdAt}</td>
+            <td class="border border-gray-200 p-2 text-center">${index + 1}</td>
+            <td class="border border-gray-200 p-2 text-center">${task.text}</td>
+            <td class="border border-gray-200 p-2 text-center">${task.completed ? "✔️" : "❌"}</td>
+            <td class="border border-gray-200 p-2 text-center">${task.createdAt}</td>
 
-        <td class="border border-gray-200 p-2 text-center">
-            <button class="px-2 deleteTaskButton">❌</button>
-        </td>
-    `;
+            <td class="border border-gray-200 p-2 text-center">
+                <button class="px-2 deleteTaskButton">❌</button>
+            </td>
+        `;
 
         const deletedBtn = row.querySelector(".deleteTaskButton");
 
         deletedBtn.addEventListener("click", () => {
             tasks.splice(index, 1)
             saveTasks();
-            renderTasks()
+            renderTasks();
+            renderCountTasks();
         })
         List.appendChild(row);
     })
 
+}
+
+function renderCountTasks(){
+    if(tasks.length === 0){
+        countTask.innerHTML = `<h2 class="font-light text-xl">No hay tareas actualmente</h2>`;
+        return;
+    }
+    countTask.innerHTML = `
+        <h2 class="font-light text-xl">Hay ${tasks.length} tareas en lista</h2>
+    `;
 }
 
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
@@ -57,16 +79,20 @@ addButton.addEventListener('click', () => {
 
     const newTasks = {
         text: text,
-        completed: completed === true,
+        completed: completed === "true",
         createdAt: new Date().toLocaleString()
     }
 
     tasks.push(newTasks);
     saveTasks();
     renderTasks();
+    renderCountTasks();
 
     input.value = '';
     completedSelect.value = "false";
 });
 
+clearButton.addEventListener("click", clearTasks);
+
 renderTasks();
+renderCountTasks();

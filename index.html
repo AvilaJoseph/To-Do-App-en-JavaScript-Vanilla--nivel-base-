@@ -22,6 +22,13 @@
             </button>
         </div>
         <div class="mt-4">
+            <button id="clearTasksButton" class="bg-[#d9e1f4] p-2 text-black font-light">
+                Limpiar todo
+            </button>
+            <div class="flex gap-2 justify-between">
+                <div id="countTask" class="mt-4"></div>
+                <input type="text" id="searchTasks" class="border border-gray-200 w-38 font-light">
+            </div>
             <table class="border-separate border-spacing-2 w-full">
                 <thead>
                     <tr>
@@ -29,6 +36,7 @@
                         <th class="font-light border border-gray-200 p-2 bg-[#d9e1f4]">Task</th>
                         <th class="font-light border border-gray-200 p-2 bg-[#d9e1f4]">Completed</th>
                         <th class="font-light border border-gray-200 p-2 bg-[#d9e1f4]">Created At</th>
+                        <th class="font-light border border-gray-200 p-2 bg-[#d9e1f4]">Actions</th>
                     </tr>
                 </thead>
                 <tbody id="taskTableBody">
