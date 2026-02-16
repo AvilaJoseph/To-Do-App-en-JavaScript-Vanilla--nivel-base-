@@ -3,7 +3,6 @@ const addButton = document.querySelector('#addTaskButton');
 const List = document.querySelector('#taskTableBody');
 const completedSelect = document.querySelector('#completedSelect');
 
-
 function IsValidTask(text, completed) {
     if (text.trim() === "") {
         return false;
@@ -12,6 +11,10 @@ function IsValidTask(text, completed) {
         return false;
     }
     return true;
+}
+
+function saveTasks(){
+    localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
 function renderTasks() {
@@ -33,19 +36,19 @@ function renderTasks() {
 
         deletedBtn.addEventListener("click", () => {
             tasks.splice(index, 1)
+            saveTasks();
             renderTasks()
         })
-
         List.appendChild(row);
     })
 
 }
 
-let tasks = [];
+let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
 addButton.addEventListener('click', () => {
     const text = input.value.trim();
-    const completed = document.querySelector('#completedSelect').value;
+    const completed = completedSelect.value;
 
     if (!IsValidTask(text, completed)) {
         alert("Por favor, ingresa una tarea válida y selecciona el estado de completado.");
@@ -54,15 +57,16 @@ addButton.addEventListener('click', () => {
 
     const newTasks = {
         text: text,
-        completed: completed,
+        completed: completed === true,
         createdAt: new Date().toLocaleString()
     }
 
     tasks.push(newTasks);
-
-    renderTasks()
+    saveTasks();
+    renderTasks();
 
     input.value = '';
     completedSelect.value = "false";
 });
 
+renderTasks();
