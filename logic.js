@@ -34,6 +34,17 @@ function renderTasks() {
     List.innerHTML = "";
     const VisibleTasks = getVisibleTasks();
 
+    if(VisibleTasks.length === 0){
+        List.innerHTML = `
+            <tr>
+                <td colspan="5" class="text-center font-light p-4">
+                    No hay resultados
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
     VisibleTasks.forEach((VisibleTask, index) => {
 
         const row = document.createElement('tr');
@@ -44,12 +55,13 @@ function renderTasks() {
             <td class="border border-gray-200 p-2 text-center">${VisibleTask.createdAt}</td>
 
             <td class="border border-gray-200 p-2 text-center">
-                <button class="editTaskButton px-2">✏️</button>
+                <button class="px-2 editTaskButton">✏️</button>
                 <button class="px-2 deleteTaskButton">❌</button>
             </td>
         `;
 
         const deletedBtn = row.querySelector(".deleteTaskButton");
+        const editBtn = row.querySelector(".editTaskButton")
 
         deletedBtn.addEventListener("click", () => {
             const realIndex = tasks.indexOf(VisibleTask);
@@ -57,16 +69,28 @@ function renderTasks() {
             saveTasks();
             renderTasks();
             renderCountTasks();
-        })
+        });
+
+        editBtn.addEventListener("click", () => {
+            const newText = prompt("Edit Task", VisibleTask.text);
+
+            if (newText === null || newText.trim() === "") return;
+
+            VisibleTask.text = newText.trim();
+            saveTasks();
+            renderTasks();
+            renderCountTasks();
+        });
+
         List.appendChild(row);
     })
 
 }
 
-function renderCountTasks(){
+function renderCountTasks() {
     const VisibleTasks = getVisibleTasks();
 
-    if(VisibleTasks.length === 0){
+    if (VisibleTasks.length === 0) {
         countTask.innerHTML = `<h2 class="font-light text-xl">No hay tareas actualmente</h2>`;
         return;
     }
@@ -75,20 +99,20 @@ function renderCountTasks(){
     `;
 }
 
-function getVisibleTasks(){
+function getVisibleTasks() {
     const searchTasks = searchInput.value.toLowerCase();
     const filterValue = filterSelect.value;
 
     return tasks.filter((task) => {
-        if(!task.text.toLowerCase().includes(searchTasks)){
+        if (!task.text.toLowerCase().includes(searchTasks)) {
             return false;
         }
 
-        if(filterValue === "completed" && task.completed === false){
+        if (filterValue === "completed" && task.completed === false) {
             return false;
         }
 
-        if(filterValue === "pending" && task.completed === true){
+        if (filterValue === "pending" && task.completed === true) {
             return false;
         }
 
@@ -135,6 +159,12 @@ filterSelect.addEventListener("change", () => {
     renderTasks();
     renderCountTasks();
 });
+
+input.addEventListener("keydown", (e) => {
+    if(e.key === "Enter"){
+        addButton.click();
+    }
+})
 
 renderTasks();
 renderCountTasks();
