@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>To-Do DOM App</title>
+</head>
+
+<body>
+    <div class="m-8">
+        <h2 class="text-xl">To-Do List</h2>
+        <div class="mt-4 flex gap-2">
+            <input id="taskInput" class="border border-gray-200 w-full font-light" type="text">
+            <select id="completedSelect" class="border border-gray-200 font-light p-1 rounded">
+                <option value="false">Falso</option>
+                <option value="true">Verdadero</option>
+            </select>
+            <button id="addTaskButton" class="bg-[#d9e1f4] p-1 text-black font-light">
+                Add Task
+            </button>
+        </div>
+        <div class="mt-4">
+            <table class="border-separate border-spacing-2 w-full">
+                <thead>
+                    <tr>
+                        <th class="font-light border border-gray-200 p-2 bg-[#d9e1f4]">ID</th>
+                        <th class="font-light border border-gray-200 p-2 bg-[#d9e1f4]">Task</th>
+                        <th class="font-light border border-gray-200 p-2 bg-[#d9e1f4]">Completed</th>
+                        <th class="font-light border border-gray-200 p-2 bg-[#d9e1f4]">Created At</th>
+                    </tr>
+                </thead>
+                <tbody id="taskTableBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+<script src="./logic.js"></script>
+
+</html>
