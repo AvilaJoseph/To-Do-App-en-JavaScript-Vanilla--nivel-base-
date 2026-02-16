@@ -14,34 +14,54 @@ function IsValidTask(text, completed) {
     return true;
 }
 
-addButton.addEventListener('click', () => {
-    const text = input.value.trim();
-    const completed = document.querySelector('#completedSelect').value;
-
-    if(!IsValidTask(text, completed)) {
-        alert("Por favor, ingresa una tarea válida y selecciona el estado de completado.");
-        return;
-    }
-
-    const row = document.createElement('tr');
-    row.innerHTML = `
-        <td class="border border-gray-200 p-2 text-center">${List.children.length + 1}</td>
-        <td class="border border-gray-200 p-2 text-center">${text}</td>
-        <td class="border border-gray-200 p-2 text-center">${completed === "true" ? "✔️" : "❌"}</td>
-        <td class="border border-gray-200 p-2 text-center">${new Date().toLocaleString()}</td>
+function renderTasks() {
+    List.innerHTML = "";
+    tasks.forEach((task, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+        <td class="border border-gray-200 p-2 text-center">${index + 1}</td>
+        <td class="border border-gray-200 p-2 text-center">${task.text}</td>
+        <td class="border border-gray-200 p-2 text-center">${task.completed === "true" ? "✔️" : "❌"}</td>
+        <td class="border border-gray-200 p-2 text-center">${task.createdAt}</td>
 
         <td class="border border-gray-200 p-2 text-center">
             <button class="px-2 deleteTaskButton">❌</button>
         </td>
     `;
 
-    const deletedBtn = row.querySelector(".deleteTaskButton");
+        const deletedBtn = row.querySelector(".deleteTaskButton");
 
-    deletedBtn.addEventListener("click", ()=>{
-        row.remove();
+        deletedBtn.addEventListener("click", () => {
+            tasks.splice(index, 1)
+            renderTasks()
+        })
+
+        List.appendChild(row);
     })
 
-    List.appendChild(row);
+}
+
+let tasks = [];
+
+addButton.addEventListener('click', () => {
+    const text = input.value.trim();
+    const completed = document.querySelector('#completedSelect').value;
+
+    if (!IsValidTask(text, completed)) {
+        alert("Por favor, ingresa una tarea válida y selecciona el estado de completado.");
+        return;
+    }
+
+    const newTasks = {
+        text: text,
+        completed: completed,
+        createdAt: new Date().toLocaleString()
+    }
+
+    tasks.push(newTasks);
+
+    renderTasks()
+
     input.value = '';
     completedSelect.value = "false";
 });
