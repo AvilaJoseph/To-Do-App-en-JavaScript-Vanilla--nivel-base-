@@ -72,14 +72,36 @@ function renderTasks() {
         });
 
         editBtn.addEventListener("click", () => {
-            const newText = prompt("Edit Task", VisibleTask.text);
+            const taskCell = row.children[1];
+            const oldText = VisibleTask.text;
 
-            if (newText === null || newText.trim() === "") return;
+            taskCell.innerHTML = `
+                <input
+                    type="text"
+                    class="border border-gray-200 p-1 w-full font-light"
+                    value="${oldText}"
+                />`;
 
-            VisibleTask.text = newText.trim();
-            saveTasks();
-            renderTasks();
-            renderCountTasks();
+                const inputEdit = taskCell.querySelector("input");
+
+                inputEdit.focus();
+                inputEdit.addEventListener("keydown", (e) => {
+                    //Enter
+                    if(e.key === "Enter"){
+                        const newValue = inputEdit.value.trim();
+                        if(newValue === "") return;
+
+                        alert("Valor actualizado");
+                        VisibleTask.text = newValue;
+                        saveTasks();
+                        renderTasks();
+                        renderCountTasks();
+                    }
+                    if(e.key === "Escape"){
+                        taskCell.innerHTML = oldText;
+                    }
+
+                })
         });
 
         List.appendChild(row);
